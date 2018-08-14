@@ -57,12 +57,21 @@ class Bounty
 
   def self.find_by_name(bounty_name)
     db = PG.connect({ dbname: 'bounty', host: 'localhost' })
-    sql = "SELECT FROM bounties
+    sql = "SELECT * FROM bounties
     WHERE name = '#{bounty_name}'"
     db.prepare("find_by_name", sql)
     found = db.exec_prepared("find_by_name")
     db.close
 
     return found[0]
+  end
+
+  def self.all
+    db = PG.connect({ dbname: 'bounty', host: 'localhost' })
+    sql = "SELECT * FROM bounties"
+    db.prepare("all", sql)
+    bounties = db.exec_prepared("all")
+    db.close
+    return bounties.map { |bounty| Bounty.new(bounty) }
   end
 end
